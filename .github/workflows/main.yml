@@ -23,13 +23,11 @@ jobs:
       - name: Run a multi-line script
         run: |
           echo ${{ steps.version.outputs.name }}
-          echo ${{ github.repository }}
 
       - uses: octokit/request-action@v2.x
         id: get_latest_release
         with:
-          route: GET /repos/:repository/releases/latest
-          repository: https://github.com/elastic/beats
+          route: GET /repos/elastic/beats/releases/latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
