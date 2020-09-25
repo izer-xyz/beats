@@ -16,7 +16,7 @@ jobs:
       - name: Get latest version number from docker hub (they have a nice API)
         id: version
         run: |
-          version = $(curl 'https://hub.docker.com/v2/repositories/elastic/journalbeat/tags?page_size=1' | jq -r .results[0].name)
+          version=$(curl 'https://hub.docker.com/v2/repositories/elastic/journalbeat/tags?page_size=1' | jq -r .results[0].name)
           echo "::set-output name=name::v$version"
 
       # Runs a set of commands using the runners shell
