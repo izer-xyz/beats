@@ -23,6 +23,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           echo ${{ steps.version.outputs.name }}
+          echo ${{ github.repository }}
 
       - uses: octokit/request-action@v2.x
         id: get_latest_release
