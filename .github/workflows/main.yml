@@ -21,7 +21,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: |
-          #version=$(echo "$release" | jq -r '.tag_name')
-          echo "$release"
+          version=$(echo "$release" | jq -r '.tag_name')
+          echo "$version"
         env:
           release : ${{ steps.latest_release.outputs.data }}
