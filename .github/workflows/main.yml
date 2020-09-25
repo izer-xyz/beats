@@ -31,7 +31,5 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository:  elastic/beats
-          ref:  $tag_name
-        env:
-          tag_name : ${{ steps.release.outputs.tag_name }}
+          ref:  ${{ steps.release.outputs.tag_name }}
 
