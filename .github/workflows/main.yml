@@ -20,8 +20,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: |
-          version=$(echo "$release" | jq -r '.tag_name')
-          echo "$version"
+      - name: Parse json release file
+        id: release
+        run: |
+          tag_name=$(echo "$release" | jq -r '.tag_name')
+          echo "::set-output name=tag_name::$tag_name"
         env:
           release : ${{ steps.latest_release.outputs.data }}
+   
+      - uses: actions/checkout@v2
+        with:
+          repository:  elastic/beats
+          ref:  $tag_name
+        env:
+          tag_name : ${{ steps.release.outputs.tag_name }}
+
