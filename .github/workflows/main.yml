@@ -22,6 +22,6 @@ jobs:
 
       - run: |
           #version=$(echo "$release" | jq -r '.tag_name')
-          echo '$release'  
+          echo "$release"
         env:
           release : ${{ steps.latest_release.outputs.data }}
