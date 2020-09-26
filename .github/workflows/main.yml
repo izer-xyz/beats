@@ -27,11 +27,16 @@ jobs:
           echo "::set-output name=tag_name::$tag_name"
       env:
           release : ${{ steps.latest_release.outputs.data }}
-   
-    - uses: actions/checkout@v2
+    
+    - name: Checkout
+      uses: actions/checkout@v2  
+      
+    - name: Checkout elastic/beats
+      uses: actions/checkout@v2
       with:
           repository:  elastic/beats
           ref:  ${{ steps.release.outputs.tag_name }}
+          path: beats
 
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
@@ -47,7 +52,7 @@ jobs:
     - name: Build...
       run: |
         sudo apt-get install -y gcc-8-arm-linux-gnueabihf libsystemd-dev
-        cd journalbeat
+        cd beats/journalbeat
         GOOS=linux GOARCH=arm CGO_ENABLED=1 CC=arm-linux-gnueabihf-gcc-8 go get
         GOOS=linux GOARCH=arm CGO_ENABLED=1 CC=arm-linux-gnueabihf-gcc-8 make
  
@@ -69,6 +74,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: journalbeat/journalbeat
+        asset_path: beats/journalbeat/journalbeat
         asset_name: journalbeat-arm
         asset_content_type: application/octet-stream
