@@ -1,5 +1,5 @@
 
-name: Cross compile Elastic Beats
+name: Build elastic/beats for arm
 
 on:
   - workflow_dispatch
