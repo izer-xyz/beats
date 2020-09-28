@@ -101,8 +101,9 @@ jobs:
           echo VERSION=$VERSION
 
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:latest
+          docker push $IMAGE_ID:latest
       env:
         IMAGE_NAME: ${{ env.BEAT }}
         VERSION: ${{ steps.release.outputs.tag_name }}
