@@ -85,5 +85,5 @@ jobs:
            docker build --build-arg BEAT=$BEAT --tag $TAG .
            docker image inspect $TAG
       env:
-           BEAT=journalbeat
-           TAG=journalbeat:${{ steps.release.outputs.tag_name }}
+           BEAT: journalbeat
+           TAG: journalbeat:${{ steps.release.outputs.tag_name }}
