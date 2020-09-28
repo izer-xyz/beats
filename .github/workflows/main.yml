@@ -58,6 +58,7 @@ jobs:
  
     - name: Create Release
       id: create_release
+      if: false
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
@@ -65,15 +66,24 @@ jobs:
         tag_name: ${{ steps.release.outputs.tag_name }}
         release_name: Release ${{ steps.release.outputs.tag_name }}
         draft: false
-        prerelease: f
+        prerelease: false
 
     - name: Upload Release Asset
       id: upload-release-asset 
+      if: false
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: beats/journalbeat/journalbeat
-        asset_name: journalbeat-arm
+        asset_name: journalbeat-linux-arm
         asset_content_type: application/octet-stream
+ 
+    - name: Build docker image    
+      run: | 
+           docker build --build-arg BEAT=$BEAT --tag $TAG .
+           docker image inspect $TAG
+      env:
+           BEAT=journalbeat
+           TAG=journalbeat:${{ steps.release.outputs.tag_name }}
