@@ -1,4 +1,4 @@
-FROM arm32v7/alpine
+FROM balenalib/raspberry-pi
 
 ARG BEAT=journalbeat
 
