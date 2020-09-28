@@ -9,6 +9,9 @@ RUN mkdir -p /beat/config && \
     chown -R beat:beat /beat
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+#COPY beat/$BEAT/$BEAT /usr/bin
+COPY beat/$BEAT/$BEAT.docker.yml /beat/config/$BEAT.yml
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["$BEAT"]
