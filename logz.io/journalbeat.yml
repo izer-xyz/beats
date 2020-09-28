@@ -1,0 +1,24 @@
+
+journalbeat.inputs:
+- paths: []
+  
+fields:
+  logzio_codec: json
+  token: ${LOGZIO_TOKEN:}
+fields_under_root: true
+
+processors:
+- rename:
+    fields:
+     - from: "agent"
+       to: "beat_agent"
+    ignore_missing: true
+- rename:
+    fields:
+     - from: "log.file.path"
+       to: "source"
+    ignore_missing: true
+
+output.logstash:
+  hosts: ["${LOGSTASH_HOST:listener-au.logz.io:5015}"]
+  ssl: true
