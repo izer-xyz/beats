@@ -14,5 +14,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: |
-           docker build --build-arg BEAT=journalbeat --tag journalbeat:$(date +%s) .
-           docker image inspect journalbeat:$(date +%s)
+           TAG=journalbeat:$(date +%s)
+           docker build --build-arg BEAT=journalbeat --tag $TAG .
+           docker image inspect $TAG
