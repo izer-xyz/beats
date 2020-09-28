@@ -76,16 +76,16 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: beats/$BEAT/$BEAT
-        asset_name: $BEAT-linux-arm
+        asset_path: beats/${{ env.BEAT }}/${{ env.BEAT }}
+        asset_name: ${{ env.BEAT}}-linux-arm
         asset_content_type: application/octet-stream
  
     - name: Build docker image    
       run: | 
-           docker build --build-arg BEAT=$BEAT --tag $TAG .
+           docker build --build-arg BEAT=${{ env.BEAT }} --tag $TAG .
            docker image inspect $TAG
       env:
-           TAG: ${{env.BEAT}}
+           TAG: ${{ env.BEAT }}
            
     - name: Log into GitHub Container Registry
       run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
@@ -103,5 +103,5 @@ jobs:
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
       env:
-        IMAGE_NAME: ${{env.BEAT}}
+        IMAGE_NAME: ${{ env.BEAT }}
         VERSION: ${{ steps.release.outputs.tag_name }}
