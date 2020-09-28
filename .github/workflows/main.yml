@@ -4,6 +4,8 @@ name: Build elastic/beats for arm
 on:
   - workflow_dispatch
     
+env:
+  BEAT: journalbeat
 
 jobs:
  build:
@@ -52,7 +54,7 @@ jobs:
     - name: Build...
       run: |
         sudo apt-get install -y gcc-8-arm-linux-gnueabihf libsystemd-dev
-        cd beats/journalbeat
+        cd beats/$BEAT
         GOOS=linux GOARCH=arm CGO_ENABLED=1 CC=arm-linux-gnueabihf-gcc-8 go get
         GOOS=linux GOARCH=arm CGO_ENABLED=1 CC=arm-linux-gnueabihf-gcc-8 make
  
@@ -76,8 +78,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: beats/journalbeat/journalbeat
-        asset_name: journalbeat-linux-arm
+        asset_path: beats/$BEAT/$BEAT
+        asset_name: $BEAT-linux-arm
         asset_content_type: application/octet-stream
  
     - name: Build docker image    
@@ -85,5 +87,24 @@ jobs:
            docker build --build-arg BEAT=$BEAT --tag $TAG .
            docker image inspect $TAG
       env:
-           BEAT: journalbeat
-           TAG: journalbeat:${{ steps.release.outputs.tag_name }}
+           TAG: $BEAT:${{ steps.release.outputs.tag_name }}
+           
+    - name: Log into GitHub Container Registry
+      run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Push image to GitHub Container Registry
+      run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
+          VERSION=latest
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+      env:
+        IMAGE_NAME: $BEAT
